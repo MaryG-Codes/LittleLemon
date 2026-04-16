@@ -14,10 +14,12 @@ from .serializers import BookingSerializer, MenuSerializer
 class MenuItemViewSet(viewsets.ModelViewSet):
     queryset = Menu.objects.all()
     serializer_class = MenuSerializer
+    permision_classes = [permissions.IsAuthenticated]
 
 class SingleMenuItemViewSet(viewsets.ModelViewSet):
     queryset = Menu.objects.all()
     serializer_class = MenuSerializer
+    permision_classes = [permissions.IsAuthenticated]
 
 class BookingsViewSet(viewsets.ModelViewSet):
     queryset = Booking.objects.all()
