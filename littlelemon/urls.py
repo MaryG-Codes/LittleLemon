@@ -22,11 +22,13 @@ router = DefaultRouter()
 router.register(r'booking', views.BookingsViewSet)
 router.register(r'menu', views.MenuItemViewSet, basename='menu')
 router.register(r'menu/<int:pk>/', views.SingleMenuItemViewSet, basename='menuitem')
-
+router.register(r'users', views.UserViewSet, basename='users')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('restaurant.urls')),
     path('api/', include(router.urls)),
-
+    path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+    path('auth/', include('djoser.urls')),
+    path('auth/', include('djoser.urls.authtoken')),
 ]
