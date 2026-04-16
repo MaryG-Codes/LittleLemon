@@ -5,7 +5,7 @@ from django.db import models
 class Booking(models.Model):
     first_name = models.CharField(max_length=200)
     reservation_date = models.DateField()
-    No_of_guests = models.IntegerField(default=1)
+    no_of_guests = models.IntegerField(default=1)
     reservation_slot = models.SmallIntegerField(default=10)
 
     def __str__(self): 

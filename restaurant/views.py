@@ -1,16 +1,30 @@
-# from django.http import HttpResponse
 from django.shortcuts import render
 from .forms import BookingForm
-from .models import Menu
+from .models import Menu, Booking
 from django.core import serializers
-from .models import Booking
 from datetime import datetime
 import json
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse
 
+from rest_framework import generics, viewsets, permissions
+from .serializers import BookingSerializer, MenuSerializer
 
-# Create your views here.
+# API Views
+class MenuItemViewSet(viewsets.ModelViewSet):
+    queryset = Menu.objects.all()
+    serializer_class = MenuSerializer
+
+class SingleMenuItemViewSet(viewsets.ModelViewSet):
+    queryset = Menu.objects.all()
+    serializer_class = MenuSerializer
+
+class BookingsViewSet(viewsets.ModelViewSet):
+    queryset = Booking.objects.all()
+    serializer_class = BookingSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+# Website Views
 def home(request):
     return render(request, 'index.html')
 
@@ -52,14 +66,16 @@ def bookings(request):
         exist = Booking.objects.filter(reservation_date=data['reservation_date']).filter(reservation_slot=data['reservation_slot']).exists()
         if exist == False:
             booking = Booking.objects.create(
-                first_name=data['first_name'],
-                reservation_date=data['reservation_date'],
-                reservation_slot=data['reservation_slot'],)
+                first_name=data.get('first_name'),
+                reservation_date=data.get('reservation_date'),
+                reservation_slot=data.get('reservation_slot'),
+                no_of_guests=data.get('no_of_guests', 1)
+                )
             booking.save()
             return HttpResponse("OK", content_type="application/json")
         else:
             return HttpResponse("{'error':1}", content_type="application/json")
-        
+    
     date = request.GET.get('date',datetime.today().date())
     bookings = Booking.objects.all().filter(reservation_date=date)
     booking_json = serializers.serialize('json', bookings)
